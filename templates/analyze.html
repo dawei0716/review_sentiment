@@ -1,0 +1,114 @@
+{% extends "base.html" %} {% block main %}
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Analysis Results</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% comment %} <h5>ID:</h5> {% endcomment %}
+        
+        <h5>Review:</h5>
+        <div><span id="review_id"></span></div>
+        <h5 class="pt-3">Analysis Result:</h5>
+        <div id="result_id"></div>
+        <div><span id = "score_id"> </span></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Close
+        </button>
+        <a class="btn btn-info" href="/results" role="button">View History</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END OF Modal -->
+
+
+<div class="container pt-5">
+  <div class="row justify-content-md-center">
+    <div class="col-md-10">
+      <h1 class= "text-primary">Movie Review Sentiment Analysis</h1>
+      <form action="" id="post-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="review">Paste movie review here. Don't worry about formatting or length! </label><br>
+          <textarea onkeyup= "myFunction()" required placeholder= "Watching The Matrix in high definition in 2019 is as incredible an experience as it was in 1999 in the theatre. It’s easy to forget just how prophetic the movie was, and how much about modern society it predicted. In the days before the proliferation of the Internet and screens, the glitches in The Matrix were weird. But now, the stutters and buffering that were so odd in 1999 are now a daily part of life. I imagine that the people who saw this on DVD or streaming for the first time might have thought those moments in the film were accidents or a slow wifi connection. The Matrix talked about unplugging before this act became a part of modern self-care." name="textarea" id ="review" style="width:700px;height:300px;"></textarea>
+        </div>
+      
+        <button
+          type="submit"
+          value="Submit"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#exampleModal"
+          id = 'analyze'
+        >
+          Analyze
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).on("submit", "#post-form", function (e) {
+    e.preventDefault();
+    $.ajax({
+      type: "POST",
+      url: '{% url "analyze_app:request_analysis" %}',
+      data: {
+        review: $("#review").val(),
+        csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val(),
+        action: "post",
+      },
+      success: function (json) {
+        document.forms["post-form"].reset();
+        document.getElementById("score_id").innerHTML = "Score: " + json["score"];
+        document.getElementById("review_id").innerHTML = json["review"];
+        if (json["result"] == "pos"){
+          document.getElementById("result_id").innerHTML = "This is a POSITIVE review"
+        } else {
+          document.getElementById("result_id").innerHTML = "This is a NEGATIVE review"
+        }
+        
+      },
+      error: function (xhr, errmsg, err) {
+        console.log("ERROR")
+      },
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function(event) {
+        document.getElementById('analyze').disabled = "true";
+    });
+  function myFunction() {
+      var nameInput = document.getElementById('review').value;
+      console.log(nameInput);
+      if (nameInput === "") {
+          document.getElementById('analyze').disabled = true;
+      } else {
+          document.getElementById('analyze').disabled = false;
+      }
+  }
+</script>
+
+{% endblock %}

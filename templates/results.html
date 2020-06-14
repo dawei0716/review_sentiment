@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="container pt-5 pull-right">
+        <div class="row">
+
+        <h1>Analysis History</h1>
+
+            <table class="table">
+                <thead>
+                <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Review</th>
+                <th scope="col">Analysis</th>
+                <th scope="col">Score</th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in dataset %}
+                    <tr>
+                    <th scope="row">{{ data.id }}</th>
+                    <td>{{ data.review }}</td>
+                    <td>
+                        {% if data.result == "pos" %}
+                            POSITIVE
+                        {% elif data.result == "neg" %}
+                            NEGATIVE
+                        {% else %}
+                            UNDEFINED
+                        {% endif %} 
+                    </td>
+                    <td>{{ data.score }}</td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

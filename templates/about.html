@@ -1,0 +1,17 @@
+{% extends "base.html" %} 
+
+{% block main %}
+<br>
+
+<div class="container pt-5">
+Data Set used: 900 positively tagged movie reviews and 900 negatively tagged movie reviews. <br><br>
+Model used: self-implemented (no libraries like sklearn) Naive Bayes model with Laplace smoothing applied.  <br><br>
+Accuracy Achieved: 84.5% accuarcy on 200 test sets (100 positive, 100 negative) <br><br>
+Input string is processed using NLTK. <br><br> 
+What is "Score"?: The score in itself doesn't have any meaning. It is simply a measure used to determine positive and negative reviews. score > 0 is a positive review. Higher score means the review is more likely to be positive. <br><br>
+See <a href="https://github.com/kingdawei/review_sentiment">Github</a> for details on how it was implemented. <br><br>
+
+Created by Donghyuk Kim 2020. 
+
+</div>
+{% endblock %}
